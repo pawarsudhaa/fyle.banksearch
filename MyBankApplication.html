@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+#myInput {
+  
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 50%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+
+body {background-color:#DEDADB ;}
+h4 {
+padding-left:55%;
+}
+
+
+
+th, td, p, input {
+            font:14px Verdana;
+        }
+        table, th, td 
+        {
+            border: solid 1px #DDD;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+        }
+        th {
+            font-weight:bold;
+        }
+</style>
+</head>
+<body>
+<h5 align="right">By: Sudha Pawar</h5>
+<h1 align="center" style="color:#F62554  ; font-size:70px; background-color:#C6BDBF">Boogle</h1>
+<h4 style="color:#581845   ; background-color:#C6BDBF;font-size:25px;">The encyclopaedia of banks</h4><br>
+
+<select onClick ="loadDoc(value,myFunction)" >
+  <option value="https://vast-shore-74260.herokuapp.com/banks?city=BANGALORE">BANGALORE</option>
+  <option value="https://vast-shore-74260.herokuapp.com/banks?city=MUMBAI">MUMBAI</option>
+  <option value="https://vast-shore-74260.herokuapp.com/banks?city=CHENNAI">CHENNAI</option>
+  <option value="https://vast-shore-74260.herokuapp.com/banks?city=DELHI">DELHI</option>
+  <option value="https://vast-shore-74260.herokuapp.com/banks?city=HYDERABAD">HYDERABAD</option>
+</select>
+<input type="text" id="myInput" onkeyup="myFunctionForSearch()" placeholder="Search for bank names.." title="Type in a name">
+<p id="showData"></p>
+<script>
+
+onload=loadDoc("https://vast-shore-74260.herokuapp.com/banks?city=BANGALORE",myFunction);
+function loadDoc(url, cFunction) {
+  var xhttp;
+  xhttp=new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      cFunction(this);
+    }
+  };
+  xhttp.open("GET", url, true);
+  xhttp.send();
+}
+function myFunction(xhttp) {
+
+  var myObj = JSON.parse(xhttp.responseText);
+  //document.getElementById("demo").innerHTML = xhttp.responseText;
+  
+  var col = [];
+        for (var i = 0; i < myObj.length; i++) {
+            for (var key in myObj[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+		
+		var table = document.createElement("table");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+		for (var i = 0; i < myObj.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = myObj[i][col[j]];
+            }
+        }
+
+ var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+		
+	document.getElementsByTagName("table")[0].setAttribute("id","myTable");
+
+}
+
+
+function myFunctionForSearch() {
+  // Declare variables 
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[7];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    } 
+  }
+  }
+</script>
+
+</body>
+</html>
